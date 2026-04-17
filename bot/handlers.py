@@ -127,7 +127,26 @@ def handle_callback_query(callback_query: Dict[str, Any]) -> None:
     }
     if data in space_map:
         space = space_map[data]
-        response = f"Great! You selected <b>{space}</b>.\n\nNow, please describe:\n• Vibe\n• Must-have features\n• Lighting\n\nOr choose another space from the list."
+        # Custom Build Object needs extra info about WHAT the object is
+        if data == "space_custom":
+            response = (
+                "🔨 Great! You selected <b>Custom Build Object</b>.\n\n"
+                "First, tell me: <b>what object do you want to build or restore?</b>\n"
+                "(e.g. a wooden shed, stone wall, vintage car, brick oven, pergola...)\n\n"
+                "Then also share:\n"
+                "• <b>Vibe</b> – rustic, modern, industrial, etc.\n"
+                "• <b>Must-have features</b> – materials, size, special details\n"
+                "• <b>Lighting</b> – golden hour, overcast, studio, etc."
+            )
+        else:
+            response = (
+                f"Great! You selected <b>{space}</b>.\n\n"
+                f"Now, please describe:\n"
+                f"• <b>Vibe</b> – mood/style\n"
+                f"• <b>Must-have features</b>\n"
+                f"• <b>Lighting</b>\n\n"
+                f"Or choose another space from the list."
+            )
         send_message(chat_id, response)
         # Store selection in memory
         add_user_message(user_id, "system", f"User selected space: {space}")

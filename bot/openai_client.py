@@ -71,6 +71,13 @@ VIDEO RULES:
 • No cuts
 • Humans perform all actions
 
+CUSTOM BUILD OBJECT RULES (applies when user selects "Custom Build Object"):
+• If the user has NOT described what the object is, ask them first: "What object do you want to build or restore?"
+• Once they specify the object (e.g. wooden shed, brick oven, stone wall, pergola, vintage car), treat it as the space type.
+• Adapt the IMAGE and VIDEO prompts to show the full build/restoration lifecycle of that specific object.
+• The scene should stay locked on that object throughout all 4 images and 4 videos.
+• Show real materials, tools, and construction steps specific to that object type.
+
 Always end response with:
 ✨ You can create the images and videos in OpenArt"""
 
