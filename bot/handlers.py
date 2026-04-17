@@ -115,7 +115,7 @@ def handle_callback_query(callback_query: Dict[str, Any]) -> None:
     }
     if data in space_map:
         space = space_map[data]
-        response = f"Great! You selected **{space}**.\n\nNow, please describe:\n• Vibe\n• Must-have features\n• Lighting\n\nOr choose another space from the list."
+        response = f"Great! You selected <b>{space}</b>.\n\nNow, please describe:\n• Vibe\n• Must-have features\n• Lighting\n\nOr choose another space from the list."
         send_message(chat_id, response)
         # Store selection in memory
         add_user_message(user_id, "system", f"User selected space: {space}")

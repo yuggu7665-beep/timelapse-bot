@@ -8,7 +8,7 @@ from bot.config import TELEGRAM_API_URL
 
 logger = logging.getLogger(__name__)
 
-def send_message(chat_id: int, text: str, parse_mode: str = "Markdown") -> bool:
+def send_message(chat_id: int, text: str, parse_mode: str = "HTML") -> bool:
     """
     Send a text message to a Telegram chat.
     """
@@ -31,7 +31,7 @@ def send_buttons(
     chat_id: int,
     text: str,
     buttons: List[List[Tuple[str, str]]],
-    parse_mode: str = "Markdown"
+    parse_mode: str = "HTML"
 ) -> bool:
     """
     Send an inline keyboard with buttons.
@@ -70,7 +70,7 @@ def edit_message_reply_markup(
     payload = {
         "chat_id": chat_id,
         "message_id": message_id,
-        "reply_markup": reply_markup,
+        "reply_markup": reply_markup if reply_markup is not None else {},
     }
     try:
         response = requests.post(url, json=payload, timeout=10)
