@@ -5,12 +5,19 @@ import os
 import logging
 from flask import Flask, request, jsonify
 from bot.handlers import handle_update
+from bot.telegram_client import set_my_commands
 
 app = Flask(__name__)
 
 # Configure logging
 logging.basicConfig(level=logging.INFO)
 logger = logging.getLogger(__name__)
+
+# Register bot commands with Telegram on startup
+try:
+    set_my_commands()
+except Exception as e:
+    logger.warning(f"Could not register bot commands on startup: {e}")
 
 @app.route('/')
 def health_check():
@@ -25,7 +32,6 @@ def webhook():
     try:
         update = request.get_json()
         logger.debug(f"Received update: {update}")
-        # Process update asynchronously (or directly)
         handle_update(update)
         return jsonify({"status": "ok"}), 200
     except Exception as e:

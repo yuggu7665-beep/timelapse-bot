@@ -3,7 +3,7 @@ Telegram update handlers.
 """
 import logging
 from typing import Dict, Any
-from bot.telegram_client import send_message, send_buttons, edit_message_reply_markup
+from bot.telegram_client import send_message, send_buttons, edit_message_reply_markup, set_my_commands
 from bot.memory import get_user_memory, add_user_message, clear_user_memory
 from bot.openai_client import generate_response
 from bot.utils import split_message, extract_photo_info
@@ -69,13 +69,60 @@ def handle_command(chat_id: int, user_id: int, command: str) -> None:
     """
     Handle slash commands.
     """
-    if command == "/start":
+    # Strip args (e.g. /start@botname)
+    base_command = command.split("@")[0].split()[0]
+
+    if base_command in ("/start", "/menu"):
         send_welcome(chat_id)
-    elif command == "/reset":
+    elif base_command == "/reset":
         clear_user_memory(user_id)
-        send_message(chat_id, "Conversation memory cleared. Start fresh!")
+        send_message(chat_id, "✅ Memory cleared! Use /start to begin fresh.")
+    elif base_command == "/spaces":
+        send_welcome(chat_id)
+    elif base_command == "/help":
+        send_help(chat_id)
+    elif base_command == "/about":
+        send_about(chat_id)
     else:
-        send_message(chat_id, f"Unknown command: {command}")
+        send_message(chat_id, f"❓ Unknown command: {command}\n\nTry /help to see available commands.")
+
+def send_help(chat_id: int) -> None:
+    """
+    Send help message.
+    """
+    text = (
+        "📖 <b>How to use the Restoration Timelapse Bot</b>\n\n"
+        "1️⃣ Use /start or /spaces to pick a space type\n"
+        "2️⃣ Tap one of the 10 space buttons\n"
+        "3️⃣ Describe your vibe, features, and lighting\n"
+        "4️⃣ Get 4 IMAGE + 4 VIDEO prompts instantly!\n\n"
+        "<b>Commands:</b>\n"
+        "/start — Start the bot\n"
+        "/spaces — Show space options again\n"
+        "/menu — Same as /start\n"
+        "/reset — Clear memory & start fresh\n"
+        "/help — Show this help\n"
+        "/about — About this bot\n\n"
+        "💡 <i>Tip: After generating prompts, paste them into OpenArt to create images/videos!</i>"
+    )
+    send_message(chat_id, text)
+
+def send_about(chat_id: int) -> None:
+    """
+    Send about message.
+    """
+    text = (
+        "🎬 <b>AI Restoration Timelapse Bot</b>\n\n"
+        "This bot generates ultra-realistic, cinematic restoration\n"
+        "timelapse prompts for 10 different space types.\n\n"
+        "<b>What it does:</b>\n"
+        "• Generates 4 IMAGE prompts (before → after stages)\n"
+        "• Generates 4 VIDEO prompts (continuous timelapse)\n"
+        "• Locked framing, real construction workflow\n"
+        "• Ready to use in OpenArt, Midjourney, Sora & more\n\n"
+        "Built with ❤️ using Python + Telegram Bot API"
+    )
+    send_message(chat_id, text)
 
 def send_welcome(chat_id: int) -> None:
     """

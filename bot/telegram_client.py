@@ -108,3 +108,25 @@ def delete_webhook() -> bool:
     except Exception as e:
         logger.error(f"Failed to delete webhook: {e}")
         return False
+
+def set_my_commands() -> bool:
+    """
+    Register bot commands with Telegram so they appear in the '/' menu.
+    """
+    url = f"{TELEGRAM_API_URL}/setMyCommands"
+    commands = [
+        {"command": "start",  "description": "🎬 Start the bot & pick a space"},
+        {"command": "spaces", "description": "🏠 Show the 10 space options again"},
+        {"command": "menu",   "description": "📋 Same as /start"},
+        {"command": "help",   "description": "📖 How to use this bot"},
+        {"command": "about",  "description": "ℹ️ About this bot"},
+        {"command": "reset",  "description": "🔄 Clear conversation & start fresh"},
+    ]
+    try:
+        response = requests.post(url, json={"commands": commands}, timeout=10)
+        response.raise_for_status()
+        logger.info("Bot commands registered with Telegram")
+        return True
+    except Exception as e:
+        logger.error(f"Failed to set bot commands: {e}")
+        return False
