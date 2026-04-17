@@ -82,10 +82,16 @@ def send_welcome(chat_id: int) -> None:
     Send welcome message with inline keyboard buttons.
     """
     buttons = [
-        [("Interior", "space_interior")],
-        [("Exterior", "space_exterior")],
-        [("Road", "space_road")],
-        [("Backyard", "space_backyard")],
+        [("🛋️ Interior Room", "space_interior")],
+        [("🏠 Exterior Facade", "space_exterior")],
+        [("🛣️ Road/Street/Driveway", "space_road")],
+        [("🔧 Garage/Workshop", "space_garage")],
+        [("🌿 Backyard/Landscape/Pool", "space_backyard")],
+        [("🏙️ Luxury Apartment", "space_luxury")],
+        [("🛍️ Retail/Showroom", "space_retail")],
+        [("🏚️ Abandoned Property", "space_abandoned")],
+        [("🕳️ Underground Space", "space_underground")],
+        [("🔨 Custom Build Object", "space_custom")],
     ]
     text = (
         "Welcome to the AI Restoration Timelapse Prompt Generator! 🎬\n\n"
@@ -111,7 +117,13 @@ def handle_callback_query(callback_query: Dict[str, Any]) -> None:
         "space_interior": "Interior Room",
         "space_exterior": "Exterior Facade",
         "space_road": "Road/Street/Driveway",
+        "space_garage": "Garage/Workshop",
         "space_backyard": "Backyard/Landscape/Pool",
+        "space_luxury": "Luxury Apartment",
+        "space_retail": "Retail/Showroom",
+        "space_abandoned": "Abandoned Property",
+        "space_underground": "Underground Space",
+        "space_custom": "Custom Build Object",
     }
     if data in space_map:
         space = space_map[data]
