@@ -1,9 +1,9 @@
 """
-OpenAI API integration for generating restoration prompts.
+LongCat/OpenAI-compatible HTTP integration for generating restoration prompts.
 """
 import logging
 from typing import List, Dict, Any
-import openai
+import requests
 from bot.config import OPENAI_API_KEY, OPENAI_MODEL, OPENAI_BASE_URL
 
 logger = logging.getLogger(__name__)
@@ -83,18 +83,29 @@ def generate_response(user_id: int, memory: List[Dict[str, Any]]) -> str:
     # Add conversation history
     messages.extend(memory)
 
+    payload = {
+        "model": OPENAI_MODEL,
+        "messages": messages,
+        "temperature": 0.7,
+        "max_tokens": 2000,
+    }
+    headers = {
+        "Authorization": f"Bearer {OPENAI_API_KEY}",
+        "Content-Type": "application/json",
+    }
+    api_url = f"{OPENAI_BASE_URL}/v1/chat/completions"
+
     try:
-        client = openai.OpenAI(api_key=OPENAI_API_KEY, base_url=OPENAI_BASE_URL)
-        response = client.chat.completions.create(
-            model=OPENAI_MODEL,
-            messages=messages,
-            temperature=0.7,
-            max_tokens=2000,
-        )
-        content = response.choices[0].message.content
-        return content.strip()
-    except openai.APIError as e:
-        logger.error(f"OpenAI API error: {e}")
+        response = requests.post(api_url, json=payload, headers=headers, timeout=30)
+        response.raise_for_status()
+        data = response.json()
+
+        if not data.get("choices"):
+            raise ValueError("No choices returned from API")
+
+        return data["choices"][0]["message"]["content"].strip()
+    except requests.HTTPError as e:
+        logger.error(f"HTTP error from OpenAI/LongCat API: {e}: {response.text}")
         return "Sorry, I encountered an error while generating the response. Please try again later."
     except Exception as e:
         logger.error(f"Unexpected error in OpenAI call: {e}")
